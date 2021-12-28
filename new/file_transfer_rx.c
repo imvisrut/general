@@ -1,18 +1,17 @@
 
 /**************************************************
 
-file: demo_rx.c
-purpose: simple demo that receives characters from
+file: demo_tx.c
+purpose: simple demo that transmits characters to
 the serial port and print them on the screen,
 exit the program by pressing Ctrl-C
 
-compile with the command: gcc demo_rx.c rs232.c -Wall -Wextra -o2 -o test_rx
+compile with the command: gcc demo_tx.c rs232.c -Wall -Wextra -o2 -o test_tx
 
 **************************************************/
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -26,11 +25,9 @@ compile with the command: gcc demo_rx.c rs232.c -Wall -Wextra -o2 -o test_rx
 
 int main()
 {
-  int i, n,
-      cport_nr=0,        /* /dev/ttyS0 (COM1 on windows) */
+  
+  int cport_nr=0,        /* /dev/ttyS0 (COM1 on windows) */
       bdrate=9600;       /* 9600 baud */
-
-  unsigned char buf[4096];
 
   char mode[]={'8','N','1',0};
 
@@ -38,35 +35,26 @@ int main()
   if(RS232_OpenComport(cport_nr, bdrate, mode))
   {
     printf("Can not open comport\n");
+
     return(0);
   }
 
-  int fd = open("test.txt", O_WRONLY | O_CREAT | O_APPEND, 0777);
-
-  while(1)
-  {
-    n = RS232_PollComport(cport_nr, buf, 4095);
-
-    if(n > 0)
-    {
-      buf[n] = 0;   /* always put a "null" at the end of a string! */
-
-      if(strcmp(buf, "####") == 0) {
-        close(fd);
-        return 0;
-      }
-
-      // printf("received %i bytes: %s\n", n, (char *)buf);
-      printf("%s", (char *)buf);
-      
-      // fputs((char *)buf , fptr);
-      write(fd, (char *)buf, strlen((char *)buf));
-      // fprintf(fptr, (char *)buf);
-    }
+  FILE *fptr = fopen("test.txt", "r");
+  if(fptr == NULL) {
+    printf("file could not be opened");
+    exit(1);
   }
 
-  close(fd);
+  char c = fgetc(fptr);
+  while (c != EOF)
+  {
+    c = fgetc(fptr);
+    RS232_SendByte(cport_nr, c);
+  }
+  RS232_cputs(cport_nr, "####");
 
-  return 0;
+  fclose(fptr);
+
+  return(0);
 }
 
