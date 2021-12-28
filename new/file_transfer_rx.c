@@ -56,6 +56,11 @@ int main()
     {
       buf[n] = 0;   /* always put a "null" at the end of a string! */
 
+      if(strcmp(buf, "####") == 0) {
+        fclose(fptr);
+        return 0;
+      }
+
       for(i=0; i < n; i++)
       {
         if(buf[i] < 32)  /* replace unreadable control-codes by dots */
@@ -66,12 +71,8 @@ int main()
 
       // printf("received %i bytes: %s\n", n, (char *)buf);
       printf("%s", (char *)buf);
-      fputs((char *)buf , fptr);
-    }
-
-    if(strcmp(buf, "####") == 0) {
-      fclose(fptr);
-      return 0;
+      // fputs((char *)buf , fptr);
+      fprintf(fptr, (char *)buf);
     }
   }
 
