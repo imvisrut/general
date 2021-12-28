@@ -12,6 +12,7 @@ compile with the command: gcc demo_rx.c rs232.c -Wall -Wextra -o2 -o test_rx
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -64,12 +65,18 @@ int main()
       }
 
       // printf("received %i bytes: %s\n", n, (char *)buf);
+      printf("%s", (char *)buf);
       fputs((char *)buf , fptr);
+    }
+
+    if(strcmp(buf, "####") == 0) {
+      fclose(fptr);
+      return 0;
     }
   }
 
   fclose(fptr);
 
-  return(0);
+  return 0;
 }
 
