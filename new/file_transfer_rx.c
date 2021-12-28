@@ -30,7 +30,7 @@ int main()
       cport_nr=0,        /* /dev/ttyS0 (COM1 on windows) */
       bdrate=9600;       /* 9600 baud */
 
-  unsigned char buf[4096];
+  unsigned char buf[1];
 
   char mode[]={'8','N','1',0};
 
@@ -45,20 +45,13 @@ int main()
 
   while(1)
   {
-    n = RS232_PollComport(cport_nr, buf, 4095);
+    n = RS232_PollComport(cport_nr, buf, 1);
 
     if(n > 0)
     {
       buf[n] = 0;   /* always put a "null" at the end of a string! */
 
-      int cnt = 0;
-      int i;
-      for(i = 0; i < n; i++) {
-        if(buf[i] == '#') {
-          cnt++;
-        }
-      }
-      if(cnt == 4) {
+      if(buf[0] == '^') {
         write(fd, EOF, 1);
         close(fd);
         return 0;
@@ -77,3 +70,4 @@ int main()
 
   return 0;
 }
+
