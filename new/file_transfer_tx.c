@@ -52,6 +52,7 @@ int main()
     RS232_SendByte(cport_nr, c);
   }
 
+  RS232_cputs(cport_nr, "\n");
   RS232_cputs(cport_nr, "####");
 
   fclose(fptr);
