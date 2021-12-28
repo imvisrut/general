@@ -56,14 +56,6 @@ int main()
         return 0;
       }
 
-      for(i=0; i < n; i++)
-      {
-        if(buf[i] < 32)  /* replace unreadable control-codes by dots */
-        {
-          buf[i] = '.';
-        }
-      }
-
       // printf("received %i bytes: %s\n", n, (char *)buf);
       printf("%s", (char *)buf);
       
