@@ -41,12 +41,7 @@ int main()
     return(0);
   }
 
-  FILE *fptr = fopen("test.txt", "a");
-
-  if(fptr == NULL) {
-    printf("file could not be created.");
-    exit(0);
-  }
+  int fd = open("test.txt", O_WRONLY | O_CREAT | O_APPEND, 0777);
 
   while(1)
   {
@@ -57,7 +52,7 @@ int main()
       buf[n] = 0;   /* always put a "null" at the end of a string! */
 
       if(strcmp(buf, "####") == 0) {
-        fclose(fptr);
+        close(fd);
         return 0;
       }
 
@@ -71,12 +66,14 @@ int main()
 
       // printf("received %i bytes: %s\n", n, (char *)buf);
       printf("%s", (char *)buf);
+      
       // fputs((char *)buf , fptr);
-      fprintf(fptr, (char *)buf);
+      write(fd, (char *)buf, strlen((char *)buf));
+      // fprintf(fptr, (char *)buf);
     }
   }
 
-  fclose(fptr);
+  close(fd);
 
   return 0;
 }
